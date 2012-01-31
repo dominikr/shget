@@ -1,9 +1,24 @@
 #!/bin/sh
 
+my_ppid=$1
+
 read status
 echo $status
+http=`echo $status|sed 's/^\(.....\).*/\1/'`
+if [ "x$http" != "xHTTP/" ]
+then
+	echo "No HTTP response"
+	exit 1
+fi
 
-my_ppid=$1
+code=`echo $status|sed 's/^[^ ]* \(...\) .*/\1/'`
+echo "HTTP Status code: $code"
+
+if [ "$code" -ne 200 ]
+then
+	echo "Something went wrong, didn't get code 200"
+	exit 1
+fi
 
 while read foo
 do
